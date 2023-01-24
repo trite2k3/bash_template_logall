@@ -119,6 +119,7 @@ do
     if [ $exitcode -ne 0 ]
     then
         log_error "Exitcode:" $exitcode "for file:" $file "see above loglines for stdout/stderr."
+        exit 1
     else
         log_debug "Filetransfer for file:" $file "successfull."
     fi
