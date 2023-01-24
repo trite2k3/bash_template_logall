@@ -2,7 +2,7 @@
 
 Example log output:
 ---
-[code]
+```
 2023/01/24 20:12:50 DEBUG Directory files_for_processing exists. Continue.
 2023/01/24 20:12:50 DEBUG Found these file: file_1.tar processing...
 2023/01/24 20:12:50 DEBUG Trying to send files.
@@ -26,4 +26,4 @@ lost connection
 2023/01/24 20:12:50 DEBUG Checking file transferred status.
 2023/01/24 20:12:50 ERROR Exitcode: 1 for file: file_3.sql see above loglines for stdout/stderr.
 2023/01/24 20:12:50 ERROR Exitcode: 1 for file: file_3.sql see above loglines for stdout/stderr.
-[/code]
+```
