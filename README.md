@@ -1,5 +1,7 @@
 # bash_template_logall
 
+IEEE 1003.1 compatible?
+
 Example log output:
 ---
 ```
