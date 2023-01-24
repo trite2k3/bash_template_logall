@@ -3,7 +3,7 @@
 #################################
 # Constants / global variables
 #################################
-LOGFILE='bashbackup.log'
+LOGFILE='bashtemplate.log'
 LOGLEVEL='DEBUG'
 
 
@@ -59,8 +59,8 @@ function log_error {
 function usage {
   echo
   echo "This is a Bash script template"
-  echo "Usage: ./example.sh -l <logfile> -L <loglevel>"
-  echo "Example: ./example.sh -l example.log -L INFO"
+  echo "Usage: ./bash_template.sh -l <logfile> -L <loglevel>"
+  echo "Example: ./bash_template.sh -l example.log -L INFO"
   echo
 }
 
