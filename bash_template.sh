@@ -3,7 +3,7 @@
 #################################
 # Constants / global variables
 #################################
-LOGFILE='bashtemplate.log'
+LOGFILE='/var/log/bash_template.log'
 LOGLEVEL='DEBUG'
 
 
@@ -20,7 +20,6 @@ exec 1>$LOGFILE 2>&1
 
 # Logging functions
 function log_output {
-  echo `date "+%Y/%m/%d %H:%M:%S"`" $@"
   echo `date "+%Y/%m/%d %H:%M:%S"`" $@" >> $LOGFILE
 }
 
@@ -97,23 +96,38 @@ then
 fi
 
 #Check if folder to do work exists
-if [ -d "files_for_processing" ]
+if [ -d "/app/backups/" ]
 then
-    log_debug "Directory files_for_processing exists. Continue."
+    log_debug "Directory /app/backups/ exists. Continue."
 else
-    log_error "Directory files_for_processing does not exist. Please create it and check that it contains files for processing before running this script."
+    log_error "Directory /app/backups/ does not exist. Please create it and check that it contains files for processing before running this script."
     exit 1
+fi
+
+#Check if logfile is present and writeable
+if [ -w $LOGFILE ]
+then
+    log_debug "Logfile is present and writeable. Continue."
+else
+    log_error "Logfile does not exist or is not writeable, please create it with appropriate permissions."
 fi
 
 #
 # Bash script logic starts here...
 #
 
-for file in $(ls files_for_processing)
+log_info "Checking for files to backup."
+
+for file in $(find /app/backups/*.tar -type f -mtime -1)
 do
-    log_debug "Found these file:" $file "processing..."
+    if [ -z $file ]
+    then
+        log_error "No files found for processing."
+break
+    fi
+    log_info "Found file:" $file "processing..."
     log_debug "Trying to send files."
-    scp -i /home/user/.ssh/id_rsa files_to_process/$file user@ip.local:/patch/to/folder
+    scp -i /home/user/.ssh/id_rsa $file user@ip.local:/opt/app/
     exitcode=$?
     log_debug "Checking file transferred status."
     if [ $exitcode -ne 0 ]
@@ -125,5 +139,16 @@ do
     fi
 done
 
+log_info "Trying to send configuration files since app backup does not do it for us."
+scp -i /home/user/.ssh/id_rsa /etc/app/app.conf user@ip.local:/opt/app/app.conf_$(date +"%d_%m_%Y")
+exitcode=$?
+log_debug "Checking file transferred status."
+if [ $exitcode -ne 0 ]
+then
+    log_error "Exitcode:" $exitcode "for file: app.conf see above loglines for stdout/stderr."
+    exit 1
+else
+    log_debug "Filetransfer for file: app.conf successfull."
+fi
 
-
+log_info "Script done processing, exit 0."
